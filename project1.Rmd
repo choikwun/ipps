@@ -1,0 +1,48 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r packages}
+library(readr)
+
+```
+
+```{r reading in data}
+ipps <- read_csv("~/Documents/Dataincubator/Inpatient_Prospective_Payment_System__IPPS__Provider_Summary_for_the_Top_100_Diagnosis-Related_Groups__DRG__-_FY2011.csv")
+irs <- read_csv("~/Documents/Dataincubator/15zpallnoagi.csv")
+```
+
+```{r data cleaning ipps}
+colnames(ipps)[colnames(ipps)=="DRG Definition"] <- "DRG"
+ipps$DRG <- as.factor(ipps$DRG)
+summary(ipps)
+```
+
+```{r data cleaning irs}
+irs <- subset(irs, ZIPCODE != '00000')
+irs <- irs[,c("ZIPCODE","A00100")]
+summary(irs)
+```
+
+```{r finding out more about DRGs}
+unique(ipps$DRG)
+```
+
+```{r}
+frequency <- data.frame(table(ipps$DRG))
+frequency
+```
+
+```{r}
+ipps[which.max(ipps$`Average Medicare Payments`),]
+```
+
+```{r}
+ipps[which.max(ipps$`Total Discharges`),]
+```
+

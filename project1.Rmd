@@ -17,8 +17,8 @@ library(ggthemes)
 ```
 
 ```{r reading in data}
-ipps <- read_csv("~/Documents/Dataincubator/Inpatient_Prospective_Payment_System__IPPS__Provider_Summary_for_the_Top_100_Diagnosis-Related_Groups__DRG__-_FY2011.csv")
-irs <- read_csv("~/Documents/Dataincubator/15zpallnoagi.csv")
+ipps <- read_csv("~/Documents/Dataincubator/ipps/Inpatient_Prospective_Payment_System__IPPS__Provider_Summary_for_the_Top_100_Diagnosis-Related_Groups__DRG__-_FY2011.csv")
+irs <- read_csv("~/Documents/Dataincubator/ipps/15zpallnoagi.csv")
 ```
 
 ```{r data cleaning ipps}
@@ -68,6 +68,19 @@ us<-map_data('state')
 ggplot(ipps.zip,aes(longitude,latitude)) +
   geom_polygon(data=us,aes(x=long,y=lat,group=group),color='gray',fill=NA,alpha=.35)+
   geom_point(aes(color = AccumulatedMedicarePayments),size=.15,alpha=0.2) +
+  xlim(-125,-65)+ylim(20,50)
+```
+
+```{r}
+ipps.DRG<-aggregate( `Total Discharges`~ `Provider Zip Code`, ipps, sum)
+colnames(ipps.DRG)[colnames(ipps.DRG)== "Provider Zip Code"] <- "zip"
+ipps.DRG<- merge(ipps.DRG, zipcode, by='zip')
+```
+
+```{r}
+ggplot(ipps.DRG,aes(longitude,latitude)) +
+  geom_polygon(data=us,aes(x=long,y=lat,group=group),color='gray',fill=NA,alpha=.35)+
+  geom_point(aes(color = `Total Discharges`),size=.15,alpha=0.2) +
   xlim(-125,-65)+ylim(20,50)
 ```
 

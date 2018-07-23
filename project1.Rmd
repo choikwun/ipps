@@ -67,7 +67,7 @@ us<-map_data('state')
 
 ggplot(ipps.zip,aes(longitude,latitude)) +
   geom_polygon(data=us,aes(x=long,y=lat,group=group),color='gray',fill=NA,alpha=.35)+
-  geom_point(aes(color = AccumulatedMedicarePayments),size=.15,alpha=1) +
+  geom_point(aes(color = AccumulatedMedicarePayments),size=.15,alpha=0.2) +
   xlim(-125,-65)+ylim(20,50)
 ```
 

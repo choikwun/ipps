@@ -9,7 +9,11 @@ Try executing this chunk by clicking the *Run* button within the chunk or by pla
 
 ```{r packages}
 library(readr)
-
+library(zipcode)
+library(tidyverse)
+library(maps)
+library(viridis)
+library(ggthemes)
 ```
 
 ```{r reading in data}
@@ -44,5 +48,26 @@ ipps[which.max(ipps$`Average Medicare Payments`),]
 
 ```{r}
 ipps[which.max(ipps$`Total Discharges`),]
+```
+
+```{r}
+ipps$AccumulatedMedicarePayments <- ipps$`Total Discharges` * ipps$`Average Medicare Payments`
+ipps[which.max(ipps$AccumulatedMedicarePayments),]
+```
+Due to the high volume of major joint replacement, the total amount paid by Medicare for DRG 470 is the highest. 
+```{r}
+data(zipcode)
+ipps.zip<-aggregate(AccumulatedMedicarePayments ~ `Provider Zip Code`, ipps, sum)
+colnames(ipps.zip)[colnames(ipps.zip)== "Provider Zip Code"] <- "zip"
+ipps.zip<- merge(ipps.zip, zipcode, by='zip')
+```
+
+```{r}
+us<-map_data('state')
+
+ggplot(ipps.zip,aes(longitude,latitude)) +
+  geom_polygon(data=us,aes(x=long,y=lat,group=group),color='gray',fill=NA,alpha=.35)+
+  geom_point(aes(color = AccumulatedMedicarePayments),size=.15,alpha=1) +
+  xlim(-125,-65)+ylim(20,50)
 ```
 
